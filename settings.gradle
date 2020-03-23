@@ -1,0 +1,2 @@
+rootProject.name='TriviaApp-MissionAndroid1.1.10'
+include ':app'
