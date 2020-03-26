@@ -3,6 +3,7 @@ package com.example.triviaapp_missionandroid1110;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,12 +19,15 @@ import android.widget.Toast;
 import com.example.triviaapp_missionandroid1110.data.AnswerListAsync;
 import com.example.triviaapp_missionandroid1110.data.QuestionBank;
 import com.example.triviaapp_missionandroid1110.model.Question;
+import com.example.triviaapp_missionandroid1110.model.Score;
+import com.example.triviaapp_missionandroid1110.util.Prefs;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+
 
 
     private TextView counterQuestion;
@@ -34,6 +38,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageButton previousButton;
     private List<Question> questionList;
     private int currentQuestionIndex =0;
+    private TextView currentScore;
+    private int currentScoreCounter = 0;
+    private Score score;
+    private TextView highScore;
+//    public static final String SCORE_ID ="score_id";
+
+    Prefs prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,12 +69,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         falseButton = findViewById(R.id.false_button);
         nextButton = findViewById(R.id.next_button);
         previousButton = findViewById(R.id.previous_button);
+        currentScore = findViewById(R.id.currentScoreCounter_textView);
+        highScore = findViewById(R.id.highScoreCounter_textView);
 
 
         trueButton.setOnClickListener(this);
         falseButton.setOnClickListener(this);
         nextButton.setOnClickListener(this);
         previousButton.setOnClickListener(this);
+
+        score = new Score();
+
+        prefs = new Prefs(MainActivity.this);
+        Log.d("Save", "onCreate: "+prefs.getHighScore());
+        highScore.setText(String.valueOf(prefs.getHighScore()));
 
     }
 
@@ -106,13 +125,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         boolean isAnswerTrue = questionList.get(currentQuestionIndex).isAnswerTrue();
         int toast = 0;
         if(userAnswer == isAnswerTrue){
+            addScore();
+            Log.d("CurrentScore", "checkAnswer: "+currentScoreCounter);
             fadeAnimation();
             toast = R.string.correctAnswer;
         }
         else{
+            subScore();
             shakeAnimation();
             toast = R.string.wrongAnswer; }
-        Toast.makeText(getApplicationContext(),toast,Toast.LENGTH_SHORT)
+            Toast.makeText(getApplicationContext(),toast,Toast.LENGTH_SHORT)
                 .show();
     }
 
@@ -167,5 +189,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             }
         });
+    }
+
+    private void addScore(){
+        currentScoreCounter = currentScoreCounter + 10;
+        score.setScore(currentScoreCounter);
+        currentScore.setText(String.valueOf(score.getScore()));
+        Log.d("Score", "addScore: "+score.getScore());
+    }
+
+    private void subScore(){
+        currentScoreCounter =  currentScoreCounter - 5;
+        score.setScore(currentScoreCounter);
+        currentScore.setText(String.valueOf(score.getScore()));
+        Log.d("Score", "subScore: "+score.getScore());
+    }
+
+    @Override
+    protected void onPause() {
+        prefs.saveHighScore(score.getScore());
+        Log.d("GetScore", "onPause: "+score.getScore());
+        super.onPause();
     }
 }
