@@ -84,6 +84,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Log.d("Save", "onCreate: "+prefs.getHighScore());
         highScore.setText(String.valueOf(prefs.getHighScore()));
 
+        currentQuestionIndex=prefs.getState();
+        Log.d("STATE_SAVE", "onCreate: "+prefs.getState());
+
     }
 
     @Override
@@ -100,8 +103,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.next_button:
-                currentQuestionIndex = (currentQuestionIndex +1) % questionList.size();
-                updateQuestion();
+                nextQuestion();
+//                updateQuestion();
                 break;
             case R.id.previous_button:
                 if(currentQuestionIndex>0){
@@ -155,6 +158,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onAnimationEnd(Animation animation) {
                 cardView.setCardBackgroundColor(Color.WHITE);
+                nextQuestion();
             }
 
             @Override
@@ -182,6 +186,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onAnimationEnd(Animation animation) {
                 cardView.setCardBackgroundColor(Color.WHITE);
+                nextQuestion();
             }
 
             @Override
@@ -191,6 +196,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
+    private void nextQuestion(){
+        currentQuestionIndex = (currentQuestionIndex +1) % questionList.size();
+        updateQuestion();
+    }
     private void addScore(){
         currentScoreCounter = currentScoreCounter + 10;
         score.setScore(currentScoreCounter);
@@ -209,6 +218,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onPause() {
         prefs.saveHighScore(score.getScore());
         Log.d("GetScore", "onPause: "+score.getScore());
+        prefs.setState(currentQuestionIndex);
         super.onPause();
     }
 }

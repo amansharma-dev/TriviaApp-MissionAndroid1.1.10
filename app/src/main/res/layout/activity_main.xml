@@ -107,7 +107,6 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_marginTop="100dp"
-        android:padding="5dp"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
         app:cardBackgroundColor="@color/colorText"
@@ -120,6 +119,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:padding="5dp"
             android:text="@string/this_is_a_sample_question_inside_a_card_view"
             android:textSize="18sp" />
 

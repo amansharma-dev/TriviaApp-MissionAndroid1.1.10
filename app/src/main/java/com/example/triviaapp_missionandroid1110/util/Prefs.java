@@ -22,4 +22,12 @@ public class Prefs {
     public int getHighScore(){
         return sharedPreferences.getInt("high_score",0);
     }
+
+    public void setState(int index){
+        sharedPreferences.edit().putInt("set_state",index).apply();
+    }
+
+    public int getState(){
+        return sharedPreferences.getInt("set_state",0);
+    }
 }
